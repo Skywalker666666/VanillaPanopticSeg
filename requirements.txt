@@ -1,0 +1,16 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+autopep8
+cython
+jupyterlab
+matplotlib
+numpy=1.14.6
+tensorboard
+tensorflow
+tqdm
+mxboard
+pycocotools
+Pillow-SIMD
+mxnet-cu100mkl
+gluoncv
