@@ -15,6 +15,11 @@ from mxnet import gluon, autograd
 from mxnet.gluon.data.vision import transforms
 from tqdm import tqdm
 
+
+import sys
+sys.path.insert(1, '../../')
+
+
 from src.dataloaders.cocosemantic import COCOSemantic
 
 

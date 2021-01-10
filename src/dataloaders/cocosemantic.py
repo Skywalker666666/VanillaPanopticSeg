@@ -41,7 +41,7 @@ class COCOSemantic(SegmentationDataset):
 
     NUM_CLASS = 53
 
-    def __init__(self, root=os.path.expanduser('mscoco'),
+    def __init__(self, root=os.path.expanduser('~/mscoco'),
                  split='train', mode=None, transform=None, **kwargs):
         super(COCOSemantic, self).__init__(root, split, mode, transform, **kwargs)
         # lazy import pycocotools
@@ -96,7 +96,15 @@ class COCOSemantic(SegmentationDataset):
         mask = np.zeros((h, w), dtype=np.uint8)
         coco_mask = self.coco_mask
         for instance in target:
-            m = coco_mask.decode(instance['segmentation'])
+            #print(instance)
+            #print(instance['segmentation'][0])
+            # right one for this version
+            rle = self.coco.annToRLE(instance)
+            m = coco_mask.decode(rle)
+            # wrong one for this version
+            #m = coco_mask.decode(instance['segmentation'])
+            #print('decode is successful')
+
             cat = instance['category_id']
             if cat in self.CAT_LIST:
                 c = self.CAT_LIST.index(cat)
@@ -116,7 +124,11 @@ class COCOSemantic(SegmentationDataset):
         for i in tbar:
             img_id = ids[i]
             cocotarget = self.coco.loadAnns(self.coco.getAnnIds(imgIds=img_id))
+            #print(len(cocotarget))
             img_metadata = self.coco.loadImgs(img_id)[0]
+            print(len(img_metadata))
+            #print(img_metadata['height'])
+            #print(img_metadata['width'])
             mask = self._gen_seg_mask(cocotarget, img_metadata['height'],
                                       img_metadata['width'])
             # more than 1k pixels

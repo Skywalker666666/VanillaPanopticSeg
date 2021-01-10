@@ -5,10 +5,15 @@ import os
 import mxnet as mx
 from mxnet import autograd
 from mxnet.gluon import nn
-#from gluoncv.model_zoo.faster_rcnn import FasterRCNN
-from gluoncv.model_zoo.rcnn.faster_rcnn import FasterRCNN
-#from gluoncv.model_zoo.mask_rcnn.rcnn_target import MaskTargetGenerator
-from gluoncv.model_zoo.rcnn.mask_rcnn.rcnn_target import MaskTargetGenerator
+# for Feb 27 version:
+from gluoncv.model_zoo.faster_rcnn import FasterRCNN
+# for new version:
+#from gluoncv.model_zoo.rcnn.faster_rcnn import FasterRCNN
+
+# for Feb 27 version:
+from gluoncv.model_zoo.mask_rcnn.rcnn_target import MaskTargetGenerator
+# for new version:
+#from gluoncv.model_zoo.rcnn.mask_rcnn.rcnn_target import MaskTargetGenerator
 
 __all__ = ['MaskRCNN', 'get_mask_rcnn',
            'mask_rcnn_resnet50_v1b_coco']

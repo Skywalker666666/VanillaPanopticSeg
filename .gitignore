@@ -116,5 +116,5 @@ venv.bak/
 .mypy_cache/
 
 # data and model is too huge
-./data/
-./models/
+./data
+./models

@@ -103,7 +103,7 @@ class SemanticSegmentation(Predict):
                 print('for category')
                 print(len(result['segmentation']))
 
-            print('for idx in tbar:')
+            print('for idx in tbar: result[segmentation]')
             print(result['segmentation'])
             print(len(semantic_segmentation))
         self.predictions = semantic_segmentation

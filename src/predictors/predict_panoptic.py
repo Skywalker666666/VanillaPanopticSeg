@@ -12,7 +12,7 @@ from tqdm import tqdm
 import sys
 sys.path.insert(1, '../../')
 
-from src.panopticapi.utils import IdGenerator, id2rgb
+from src.panopticapi.panopticapi.utils import IdGenerator, id2rgb
 
 
 class PanopticSegmentation:
