@@ -41,7 +41,7 @@ class COCOSemantic(SegmentationDataset):
 
     NUM_CLASS = 53
 
-    def __init__(self, root=os.path.expanduser('~/mscoco'),
+    def __init__(self, root=os.path.expanduser('~/.mxnet/datasets/coco'),
                  split='train', mode=None, transform=None, **kwargs):
         super(COCOSemantic, self).__init__(root, split, mode, transform, **kwargs)
         # lazy import pycocotools
@@ -49,13 +49,13 @@ class COCOSemantic(SegmentationDataset):
         from pycocotools import mask
         if split == 'train':
             print('train set')
-            ann_file = os.path.join(root, 'annotations/instances_train2017.json')
-            ids_file = os.path.join(root, 'annotations/train_ids.mx')
+            ann_file = os.path.join(root, 'annotations/stuff_train2017.json')
+            ids_file = os.path.join(root, 'annotations/sem_train_ids.mx')
             self.root = os.path.join(root, 'train2017')
         else:
             print('val set')
-            ann_file = os.path.join(root, 'annotations/instances_val2017.json')
-            ids_file = os.path.join(root, 'annotations/val_ids.mx')
+            ann_file = os.path.join(root, 'annotations/stuff_val2017.json')
+            ids_file = os.path.join(root, 'annotations/sem_val_ids.mx')
             self.root = os.path.join(root, 'val2017')
         self.coco = COCO(ann_file)
         self.coco_mask = mask
@@ -98,12 +98,19 @@ class COCOSemantic(SegmentationDataset):
         for instance in target:
             #print(instance)
             #print(instance['segmentation'][0])
-            # right one for this version
+            #--------------------------------------------------------------------
+            # right one for this version (1atest version)
             rle = self.coco.annToRLE(instance)
             m = coco_mask.decode(rle)
-            # wrong one for this version
+            #--------------------------------------------------------------------
+            # For original github version.
             #m = coco_mask.decode(instance['segmentation'])
+            #--------------------------------------------------------------------
             #print('decode is successful')
+            # Here is anoter recommendation from gluoncv/data/mscoco/segmentation.py
+            #rle = coco_mask.frPyObjects(instance['segmentation'], h, w)
+            #m = coco_mask.decode(rle)
+            #--------------------------------------------------------------------
 
             cat = instance['category_id']
             if cat in self.CAT_LIST:
@@ -126,7 +133,7 @@ class COCOSemantic(SegmentationDataset):
             cocotarget = self.coco.loadAnns(self.coco.getAnnIds(imgIds=img_id))
             #print(len(cocotarget))
             img_metadata = self.coco.loadImgs(img_id)[0]
-            print(len(img_metadata))
+            #print(len(img_metadata))
             #print(img_metadata['height'])
             #print(img_metadata['width'])
             mask = self._gen_seg_mask(cocotarget, img_metadata['height'],

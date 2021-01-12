@@ -2,19 +2,21 @@
 import argparse
 import os
 import shutil
-
-import gluoncv
-import mxnet as mx
-from gluoncv import model_zoo
-from gluoncv.loss import *
-from gluoncv.model_zoo.segbase import *
-from gluoncv.utils import LRScheduler
-from gluoncv.utils.parallel import *
-from mxboard import SummaryWriter
-from mxnet import gluon, autograd
-from mxnet.gluon.data.vision import transforms
 from tqdm import tqdm
 
+import mxnet as mx
+from mxnet import gluon, autograd
+from mxnet.gluon.data.vision import transforms
+
+import gluoncv
+from gluoncv.loss import *
+from gluoncv.utils import LRScheduler
+from gluoncv.model_zoo.segbase import *
+from gluoncv import model_zoo
+from gluoncv.utils.parallel import *
+from mxboard import SummaryWriter
+
+from gluoncv.data import get_segmentation_dataset
 
 import sys
 sys.path.insert(1, '../../')
@@ -123,12 +125,28 @@ class Trainer(object):
                        'crop_size': args.crop_size}
         trainset = COCOSemantic(split='train', mode='train', **data_kwargs)
         valset = COCOSemantic(split='val', mode='val', **data_kwargs)
+
+        #trainset = get_segmentation_dataset(
+        #    args.dataset, split=args.train_split, mode='train', **data_kwargs)
+        #valset = get_segmentation_dataset(
+        #    args.dataset, split='val', mode='val', **data_kwargs)
+
         self.train_data = gluon.data.DataLoader(
             trainset, args.batch_size, shuffle=True, last_batch='rollover',
             num_workers=args.workers)
         self.eval_data = gluon.data.DataLoader(valset, args.test_batch_size,
                                                last_batch='rollover', num_workers=args.workers)
-        model = model_zoo.PSPNet(nclass=trainset.NUM_CLASS, backbone='resnet50', aux=True, pretrained_base=True)
+
+
+        model = model_zoo.PSPNet(nclass=trainset.NUM_CLASS, backbone='resnet50', aux=True, pretrained_base=True, norm_layer=args.norm_layer, norm_kwargs=args.norm_kwargs, crop_size=args.crop_size)
+
+#        model = get_segmentation_model(model='psp', dataset='coco',
+#                                           backbone='resnet50', norm_layer=args.norm_layer,
+#                                           norm_kwargs=args.norm_kwargs, aux=args.aux,
+#                                           crop_size=args.crop_size)
+#
+
+
         model.cast(args.dtype)
         self.net = DataParallelModel(model, args.ctx, args.syncbn)
         self.evaluator = DataParallelModel(SegEvalModel(model), args.ctx)
@@ -176,7 +194,7 @@ class Trainer(object):
             self.optimizer.step(self.args.batch_size)
             for loss in losses:
                 train_loss += loss.asnumpy()[0] / len(losses)
-                self.sw.add_scalar(tag='Training MixSoftmaxCrossEntropyLoss', value=train_loss, global_step=epoch)
+                self.sw.add_scalar(tag='Training_MixSoftmaxCrossEntropyLoss', value=train_loss, global_step=epoch)
             tbar.set_description('Epoch %d, training loss %.3f' % \
                                  (epoch, train_loss / (i + 1)))
             mx.nd.waitall()
@@ -223,6 +241,8 @@ if __name__ == "__main__":
         print('Starting Epoch:', args.start_epoch)
         print('Total Epochs:', args.epochs)
         for epoch in range(args.start_epoch, args.epochs):
+            print('epoch in main: ')
+            print(epoch)
             trainer.training(epoch)
             if not trainer.args.no_val:
                 trainer.validation(epoch)
