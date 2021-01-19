@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 import sys
 sys.path.insert(1, '../../')
+sys.path.insert(1, '../')
 
 
 from src.models.pspnet import PSPNet
@@ -18,7 +19,11 @@ class SemanticSegmentation(Predict):
     """Perform the semantic segmentation on a dataset by using a PSPNet."""
 
     def __init__(self, model_path: str = '../../models/PSPNet_resnet50_1_epoch.params',
+    #def __init__(self, model_path: str = '../../models/PSP_Resnet50_1epoch_auxon_batchs1_lr1en5.params',
                  images_info_path: str = '../../data/annotations/mini_test.json', no_cuda: bool = True):
+                 #images_info_path: str = '/home/zhiliu/.mxnet/datasets/coco/annotations/stuff_val2017.json', no_cuda: bool = True):
+
+
         Predict.__init__(self, images_info_path, no_cuda)
         self.model_path = model_path
         self.model = self._load_model()
@@ -90,8 +95,12 @@ class SemanticSegmentation(Predict):
             predicted_categories = list(np.unique(predict))
 
             for category in predicted_categories:
+                print('Category: ')
+                print(category)
+                print("category_id: self.classes[int(category)]")
+                print(self.classes[int(category)])
                 # TODO: I think the category 0 is not 'banner' as expected... Need to look at the training.
-                if category == 0.0: continue
+                #if category == 0.0: continue
                 binary_mask = (np.isin(predict, category) * 1)
                 binary_mask = np.asfortranarray(binary_mask).astype('uint8')
                 segmentation_rle = coco_mask.encode(binary_mask)
@@ -100,12 +109,12 @@ class SemanticSegmentation(Predict):
                           "segmentation": segmentation_rle,
                           }
                 semantic_segmentation.append(result)
-                print('for category')
-                print(len(result['segmentation']))
+                #print('for category')
+                #print(len(result['segmentation']))
 
-            print('for idx in tbar: result[segmentation]')
-            print(result['segmentation'])
-            print(len(semantic_segmentation))
+            #print('for idx in tbar: result[segmentation]')
+            #print(result['segmentation'])
+            #print(len(semantic_segmentation))
         self.predictions = semantic_segmentation
 
 
