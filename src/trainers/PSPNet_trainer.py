@@ -138,7 +138,7 @@ class Trainer(object):
                                                last_batch='rollover', num_workers=args.workers)
 
 
-        model = model_zoo.PSPNet(nclass=trainset.NUM_CLASS, backbone='resnet50', aux=True, pretrained_base=True, norm_layer=args.norm_layer, norm_kwargs=args.norm_kwargs, crop_size=args.crop_size)
+        model = model_zoo.PSPNet(nclass=trainset.NUM_CLASS, backbone='resnet50', aux=args.aux, pretrained_base=True, norm_layer=args.norm_layer, norm_kwargs=args.norm_kwargs, crop_size=args.crop_size,ctx=args.ctx)
 
 #        model = get_segmentation_model(model='psp', dataset='coco',
 #                                           backbone='resnet50', norm_layer=args.norm_layer,
