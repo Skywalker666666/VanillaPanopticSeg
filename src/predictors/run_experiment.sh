@@ -17,6 +17,32 @@
 
 
 
-python instance_segmentation_test.py --model psp --dataset coco --batch-size 1 --epochs 1 --lr 1e-5 --resume /home/zhiliu/Documents/Weapons/gluon-cv/scripts/segmentation/runs/coco/psp/default/PSPNet_1epoch_21class_instance.params --test-batch-size 4 --eval --aux
+#python instance_segmentation_test.py --model psp --dataset coco --batch-size 1 --epochs 1 --lr 1e-5 --resume /home/zhiliu/Documents/Weapons/gluon-cv/scripts/segmentation/runs/coco/psp/default/PSPNet_1epoch_21class_instance.params --test-batch-size 4 --eval --aux
+
+# for viz
+#turned off eval
+#python semantic_segmentation_test.py --model psp --dataset coco --batch-size 1 --epochs 1 --lr 1e-5 --resume ~/Documents/Panoptic_Segement/Cocopanopticapi/VanillaPanopticSeg/src/trainers/runs/coco/psp/default/PSP_Resnet50_epoch2of2_auxon_batchs4_lr1en3.params --test-batch-size 1 --aux
+
+#19-01-2021 Eve
+#python predict_semantic.py --resume ~/Documents/Panoptic_Segement/Cocopanopticapi/VanillaPanopticSeg/src/trainers/runs/coco/psp/default/PSP_Resnet50_epoch2of2_auxon_batchs4_lr1en3.params --sem-seg-result-file predictions_test_semantic_segmentation_0119_with92_demo.json
+
+# without cuda, so slow
+#python predict_semantic.py --resume ~/Documents/Panoptic_Segement/Cocopanopticapi/VanillaPanopticSeg/src/trainers/runs/coco/psp/default/PSP_Resnet50_epoch2of2_auxon_batchs4_lr1en3.params --sem-seg-result-file predictions_test_semantic_segmentation_0119_with92.json  --no-cuda
+
+
+# with cuda, faster
+#python predict_semantic.py --resume ~/Documents/Panoptic_Segement/Cocopanopticapi/VanillaPanopticSeg/src/trainers/runs/coco/psp/default/PSP_Resnet50_epoch2of2_auxon_batchs4_lr1en3.params --sem-seg-result-file predictions_test_semantic_segmentation_0119_with92.json
+
+
+# 20-01-2021
+#python semantic_segmentation_test.py  --model psp --dataset coco --batch-size 1 --epochs 1 --lr 1e-3 --resume     ~/Documents/Panoptic_Segement/Cocopanopticapi/VanillaPanopticSeg/src/trainers/runs/coco/psp/default/PSP_Resnet50_54c_epoch2of2_auxon_batchs4_lr1en3.params --test-batch-size 4 --eval --aux
+
+#python predict_semantic.py --resume ~/Documents/Panoptic_Segement/Cocopanopticapi/VanillaPanopticSeg/src/trainers/runs/coco/psp/default/PSP_Resnet50_54c0_epoch2of2_auxon_batchs4_lr1en3.params --sem-seg-result-file predictions_test_semantic_segmentation_0122_without92_54_0.json
+
+
+
+
+#22-01-2021
+python semantic_segmentation_test.py  --model psp --dataset coco --batch-size 1 --epochs 1 --lr 1e-3 --resume     ~/Documents/Panoptic_Segement/Cocopanopticapi/VanillaPanopticSeg/src/trainers/runs/coco/psp/default/PSP_Resnet50_54c0_epoch2of2_auxon_batchs4_lr1en3.params --test-batch-size 4 --eval --aux
 
 

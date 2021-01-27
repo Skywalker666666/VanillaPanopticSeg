@@ -23,6 +23,12 @@ from src.dataloaders.cocosemantic import COCOSemantic
 
 from trainers.PSPNet_trainer import parse_args
 
+#import matplotlib.pyplot as plt
+
+
+
+
+
 def test(args):
     # output folder
     outdir = 'outdir'
@@ -57,9 +63,12 @@ def test(args):
 
     test_data = gluon.data.DataLoader(testset, args.test_batch_size,
                                                last_batch='keep', num_workers=args.workers)
-
-
-
+    """
+    # only used for generating mask ground truth.
+    print(len(testset.ids))
+    for i in np.arange(len(testset.ids)):
+        img_out, mask_out = testset[i]
+    """
 
     # create network
     if args.model_zoo is not None:
@@ -135,36 +144,28 @@ def test(args):
             tbar.set_description( 'pixAcc: %.4f, mIoU: %.4f' % (pixAcc, mIoU))
         else:
             im_paths = dsts
-            print("im_paths: ")
-            print(im_paths)
+            #print("im_paths: ")
+            #print(im_paths)
             predicts = evaluator.parallel_forward(data)
             for predict, impath in zip(predicts, im_paths):
-                predict = mx.nd.squeeze(mx.nd.argmax(predict[0], 1)).asnumpy() + \
+                print('i: ')
+                print(i)
+                #print(predict)
+                #print(predict[0])
+                #predict = mx.nd.squeeze(mx.nd.argmax(predict[0], 1)).asnumpy() + \
+                predict = mx.nd.squeeze(mx.nd.argmax(predict[0], 0)).asnumpy() + \
                     testset.pred_offset
+                #print('predict: ')
+                #print(predict)
                 mask = get_color_pallete(predict, args.dataset)
-                print("outname: ")
-                print(os.path.splitext(impath)[0])
-                outname = os.path.splitext(impath)[0] + '.png'
+                #print('mask: ')
+                #print(mask)
+                #print("outname: ")
+                #print(os.path.splitext(impath)[0])
+                #outname = os.path.splitext(impath)[0] + '.png'
+                #mask.save(os.path.join(outdir, outname))
+                outname = 'predict_mask_' + str(i) + '.png'
                 mask.save(os.path.join(outdir, outname))
-
-
-#def validation(self, epoch):
-#    # total_inter, total_union, total_correct, total_label = 0, 0, 0, 0
-#    self.metric.reset()
-#    tbar = tqdm(self.eval_data)
-#    for i, (data, target) in enumerate(tbar):
-#        outputs = self.evaluator(data.astype(args.dtype, copy=False))
-#        outputs = [x[0] for x in outputs]
-#        targets = mx.gluon.utils.split_and_load(target, args.ctx, even_split=False)
-#        self.metric.update(targets, outputs)
-#        pixAcc, mIoU = self.metric.get()
-#        tbar.set_description('Epoch %d, validation pixAcc: %.3f, mIoU: %.3f' % \
-#                             (epoch, pixAcc, mIoU))
-#        self.sw.add_scalar(tag='Pixel Accuray (on valset)', value=pixAcc, global_step=epoch)
-#        self.sw.add_scalar(tag='mIoU (on valset)', value=mIoU, global_step=epoch)
-#        mx.nd.waitall()
-
-
 
 if __name__ == "__main__":
     args = parse_args()
