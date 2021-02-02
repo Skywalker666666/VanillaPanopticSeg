@@ -26,12 +26,10 @@ from trainers.PSPNet_trainer import parse_args
 #import matplotlib.pyplot as plt
 
 
-
-
-
 def test(args):
     # output folder
-    outdir = 'outdir'
+    #outdir = 'outdir'
+    outdir = 'outdir_01262021'
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     # image transform
