@@ -68,3 +68,9 @@ The script to generate ground truth semantic segmentation result is embedded in 
 Multi_purp_visualize.py
 Visulization and image save.
 
+
+And for panoptic combine script:
+We are using script under the panopticapi:
+Combine_semantic_and_instance_predictions.py
+
+
