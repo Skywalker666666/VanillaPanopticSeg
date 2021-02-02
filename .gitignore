@@ -121,3 +121,7 @@ models/
 
 src/trainers/logs/
 src/trainers/runs/
+
+src/predictors/gt_outdir/
+src/predictors/outdir/
+
